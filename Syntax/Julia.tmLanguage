@@ -21,6 +21,10 @@
 	<array>
 		<dict>
 			<key>include</key>
+			<string>#EmbeddedSQL</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#function_decl</string>
 		</dict>
 		<dict>
@@ -54,6 +58,33 @@
 	</array>
 	<key>repository</key>
 	<dict>
+		<key>EmbeddedSQL</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>begin</key>
+					<string>\b[query("|sql"]</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>support.function.julia</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>[")|"]</string>
+					<key>patterns</key>
+					<array>
+						<dict>	
+							<key>include</key>
+							<string>source.sql</string>
+						</dict>
+					</array>
+				</dict>
+			</array>
+		</dict>
 		<key>bracket</key>
 		<dict>
 			<key>patterns</key>
