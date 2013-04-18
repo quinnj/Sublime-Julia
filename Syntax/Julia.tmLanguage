@@ -25,6 +25,10 @@
 		</dict>
 		<dict>
 			<key>include</key>
+			<string>#Console-ERROR</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#function_decl</string>
 		</dict>
 		<dict>
@@ -58,13 +62,25 @@
 	</array>
 	<key>repository</key>
 	<dict>
+		<key>Console-ERROR</key>
+		<dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>ERROR:.*</string>
+					<key>name</key>
+					<string>invalid.deprecated.julia</string>
+				</dict>
+			</array>
+		</dict>
 		<key>EmbeddedSQL</key>
 		<dict>
 			<key>patterns</key>
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>\b[query("|sql"]</string>
+					<string>\bquery\("</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
@@ -74,7 +90,7 @@
 						</dict>
 					</dict>
 					<key>end</key>
-					<string>[")|"]</string>
+					<string>"</string>
 					<key>patterns</key>
 					<array>
 						<dict>	
