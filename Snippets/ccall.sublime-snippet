@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+ccall( (:${1:function}, ${2:lib}), ${3:call conv},
+		${4:return}, (${5:argtypes}),
+		${6:argvars})
+]]></content>
+	<tabTrigger>ccall</tabTrigger>
+	<scope>source.julia</scope>
+</snippet>
