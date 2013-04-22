@@ -47,7 +47,7 @@
                             {
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/Julia/SublimeREPLjulia.sublime-settings"
+                                    "file": "${packages}/Sublime-Julia/SublimeREPLjulia.sublime-settings"
                                 },
                                 "caption": "Settings – Default"
                             },
