@@ -3,23 +3,23 @@
                  "id": "repl_julia",
                  "mnemonic": "r",
                  "args": {
-                    "type": "subprocess",
+		    "type": "subprocess",
                     "external_id": "julia",
                     "encoding": {
                         "windows": "$win_cmd_encoding",
                         "linux": "utf8",
                         "osx": "utf8"
                         },
-                    "cmd": {"linux": ["julia"],
-                            "osx": ["julia"],
+                    "cmd": {"linux": ["julia-release-basic"],
+                            "osx": ["julia-release-basic"],
                             "windows": ["julia-basic.bat"]},
                     "cwd": "$file_path",
                     "extend_env": {"osx": {"PATH": "{PATH}:/usr/local/bin"},
                                    "linux": {"PATH": "{PATH}:/usr/local/bin"},
                                    "windows": {}},
                     "cmd_postfix": "\n", // postfix that will be automatically added after a line in repl
-                    "suppress_echo": {"osx": true,
-                                      "linux": true,
+                    "suppress_echo": {"osx": false,
+                                      "linux": false,
                                       "windows": false},
                     "syntax": "Packages/Sublime-Julia/Syntax/Julia.tmLanguage"
                     }
