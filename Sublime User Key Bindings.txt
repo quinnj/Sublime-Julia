@@ -1,19 +1,9 @@
 [
-     {
-        "id": "tools",
-        "children":
-        [{
-            "caption": "SublimeREPL-Julia",
-            "mnemonic": "r",
-            "id": "SublimeREPLjulia",
-            "children":
-            [
-                {"command": "repl_open", 
-                 "caption": "Julia",
+{ "keys": ["ctrl+j"], "command": "repl_open",
                  "id": "repl_julia",
-                 "mnemonic": "s",
+                 "mnemonic": "r",
                  "args": {
-                     "type": "subprocess",
+                    "type": "subprocess",
                     "external_id": "julia",
                     "encoding": {
                         "windows": "$win_cmd_encoding",
@@ -34,7 +24,4 @@
                     "syntax": "Packages/Julia/Syntax/Julia.tmLanguage"
                     }
                 }
-            ]   
-        }]
-    }
 ]

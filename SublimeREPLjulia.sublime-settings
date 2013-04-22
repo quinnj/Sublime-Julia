@@ -3,7 +3,7 @@
 	// that should be visible for all subporcess repls launched within
 	// SublimeREPL. This is a very good place to add PATH extension
 	// once "PATH": "{PATH}:/home/username/mylocalinstalls/bin" or whatever
-	"default_extend_env": {},
+	"default_extend_env": {"PATH": "C:/Users/quinnj/Google Drive/Dropbox/Dropbox/julia0.1.2"},
 
 	// Persistent history is stored per REPL external_id, it means that all python
 	// REPLS will share history. If you wish you can disable history altogether
