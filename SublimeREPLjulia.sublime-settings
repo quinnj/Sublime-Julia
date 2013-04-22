@@ -19,12 +19,6 @@
 	// enable this option to filter them out.
 	"filter_ascii_color_codes": true,
 
-	// Where to look for python virtualenvs
-	"python_virtualenv_paths": [
-		"~/.virtualenvs",  // virtualenvwrapper
-		"~/.venv"  // venv.bash https://github.com/wuub/venv
-	],
-
 	// Use arrows for history navigation instead of Alt+[P|N]/Ctrl+[P|N]
 	"history_arrows": true,
 
@@ -39,16 +33,5 @@
 		"auto_complete": true,
 		"line_numbers": false,
 		"gutter": false
-	},
-
-	// this settings exposes additional variables in repl config files, especially
-	// those related to sublime projects that are not available through standard API
-	// WARNING: this will switch your build system back to Automatic each time a REPL
-	// is started so beware!
-	"use_build_system_hack": false,
-
-	// IP address used to setup autocomplete server in sublimerepl.
-	// changing this is usefull when you want to exclude one address
-	// from proxychains/tsocks routing
-	"autocomplete_server_ip": "127.0.0.1"
+	}
 }
