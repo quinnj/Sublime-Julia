@@ -1,0 +1,68 @@
+[
+    {
+        "id": "tools",
+        "children":
+        [{
+            "caption": "SublimeREPL-Julia",
+            "mnemonic": "r",
+            "id": "SublimeREPLjulia",
+            "children":
+            [
+                {"caption": "Eval in REPL",
+                 "children":
+                    [
+                        {"caption": "Selection", "command": "repl_transfer_current2", "args": {"scope": "selection"}},
+                        {"caption": "Lines", "command": "repl_transfer_current2", "args": {"scope": "lines"}},
+                        {"caption": "File", "command": "repl_transfer_current2", "args": {"scope": "file"}}
+                ]},
+                {"caption": "Transfer to REPL",
+                 "children":
+                    [
+                        {"caption": "Selection", "command": "repl_transfer_current2", "args": {"scope": "selection", "action":"view_write"}},
+                        {"caption": "Lines", "command": "repl_transfer_current2", "args": {"scope": "lines", "action":"view_write"}},
+                        {"caption": "File", "command": "repl_transfer_current2", "args": {"scope": "file", "action":"view_write"}}
+                    ]
+                },
+                { "caption": "-" }
+            ]
+        }]
+    },
+
+    {
+        "caption": "Preferences",
+        "mnemonic": "n",
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "mnemonic": "P",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "SublimeREPL-Julia",
+                        "children":
+                        [
+                            {
+                                "command": "open_file", "args":
+                                {
+                                    "file": "${packages}/Julia/SublimeREPLjulia.sublime-settings"
+                                },
+                                "caption": "Settings – Default"
+                            },
+                            {
+                                "command": "open_file", "args":
+                                {
+                                    "file": "${packages}/User/SublimeREPLjulia.sublime-settings"
+                                },
+                                "caption": "Settings – User"
+                            },
+                            { "caption": "-" }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

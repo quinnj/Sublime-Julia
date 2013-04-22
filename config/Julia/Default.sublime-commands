@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "SublimeREPL: Julia",
+        "command": "run_existing_window_command", "args":
+        {
+            "id": "repl_julia",
+            "file": "config/Julia/Main.sublime-menu"
+        }
+    }
+]
