@@ -21,6 +21,10 @@
 	<array>
 		<dict>
 			<key>include</key>
+			<string>#bracket</string>
+		</dict>
+		<dict>
+			<key>include</key>
 			<string>#EmbeddedSQL</string>
 		</dict>
 		<dict>
