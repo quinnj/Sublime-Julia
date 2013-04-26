@@ -8,7 +8,7 @@ Installation
 2. Navigate to your `Sublime Text 2/Packages` folder on the command line
   * `~/AppData/Roaming/Sublime Text 2/Packages` on Windows
   * `~/.config/sublime-text-2/Packages` on Linux
-  * Anyone know on mac?
+  * `~/Library/Application Support/Sublime Text 2/Packages` on OSX
 3. Run the command `git clone https://github.com/karbarcca/Sublime-Julia.git Sublime-Julia`
 4. Make any additional path or key binding configurations mentioned below
 
