@@ -38,10 +38,10 @@ Features
  6. The first key is:  "default_extend_env": {},
  7. WINDOWS ONLY:
    1. Add your absolute Julia path (where your "julia-basic.bat" file now resides) inside the curly braces with the key "PATH"
-   2. Your edited key should look like: "default_extend_env": {"PATH": "path to your julia-basic.bat"}, (*Note: just include the -path- to your julia-basic.bat file, not the filename itself)
+   2. Your edited key should look like: "default_extend_env": {"PATH": "path to your julia-basic.bat; {PATH}"}, (*Note: just include the -path- to your julia-basic.bat file, not the filename itself; Also note the `; {PATH}` after the path, this allows your Julia access to normal environment paths like it would usually)
  8. LINUX/OSX ONLY:
    1. Add your absolute Julia path (where your "julia-release-x" files are) inside the curly braces with the key "PATH"
-   2. Your edited key should look like: "default_extend_env": {"PATH": "path to your julia dir/usr/bin"}, (*Note: just include the -path- to your julia-release-x files, not a filename itself)
+   2. Your edited key should look like: "default_extend_env": {"PATH": "path to your julia dir/usr/bin; {PATH}"}, (*Note: just include the -path- to your julia-release-x files, not a filename itself; Also note the `; {PATH}` after the path, this allows your Julia access to normal environment paths like it would usually)
 
 
 License and Price
