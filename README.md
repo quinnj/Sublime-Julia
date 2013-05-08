@@ -18,7 +18,7 @@ Features
 #### Common Sublime Features
  * Adds Julia build system file: Defaults to running `julia` with the current file on the command line; Note that users without julia or julia.bat (windows) in their system PATH need to manually specify julia's path/filename (e.g. "Preferences -> Browse Packages -> Julia -> Build -> Julia.sublime-build", edit "julia" to aboslute path/filename)
  * Adds common Julia snippets for convenience and for those hard-to-remember commands (e.g. `ccall`): ccall, for/while loops, list comprehensions, function/macro/type definitions, if/ifelse blocks
- * Julia language syntax: Note this is different than the other Julia Language sublime package; this package mirrors the official JuliaLang/julia github language syntax, with a few tweaks added for console use within sublime; To explicitly use this syntax, navigate to Julia REPL or .jl file and navigate the menus "View -> Syntax -> Sublime-Julia -> Julia"
+ * Julia language syntax: Note this is different than the other Julia Language sublime package; this package mirrors the official JuliaLang/julia github language syntax, with a few tweaks added for console use within sublime; To explicitly use this syntax, navigate to Julia REPL or .jl file and navigate the menus "View -> Syntax -> Julia"
 
 #### SublimeREPL-Julia
  * Includes a forked SublimeREPL package tailored specifically for Julia; built to exist exclusive of SublimeREPL (meaning you may or may not have SublimeREPL installed and this will still work)
