@@ -1,32 +1,19 @@
-from sublimerepljulia import manager
+from __future__ import absolute_import, unicode_literals, print_function, division
+
+import re
 import sublime_plugin
 import sublime
 from collections import defaultdict
 import tempfile
+import binascii
+
+try:
+    from .sublimejulia import manager, SETTINGS_FILE
+except (ImportError, ValueError):
+    from sublimejulia import manager, SETTINGS_FILE
 
 
-"""This is a bit stupid, but it's really difficult to create a temporary file with
-a persistent name that can be passed to external process using this name, and then
-delete it reliably..."""
-TEMP_FILE = None
-
-
-def temp_file():
-    global TEMP_FILE
-    if not TEMP_FILE:
-        TEMP_FILE = tempfile.NamedTemporaryFile(delete=False, prefix="SublimeREPL_")
-        TEMP_FILE.close()
-    return TEMP_FILE
-
-
-def unload_handler():
-    import os.path
-    if not TEMP_FILE or not os.path.isfile(TEMP_FILE.name):
-        return
-    os.unlink(TEMP_FILE.name)
-
-
-def default_sender(repl, text, file_name=None):
+def default_sender(repl, text, view=None):
     repl.write(text)
 
 """Senders is a dict of functions used to transfer text to repl as a repl
@@ -40,51 +27,41 @@ def sender(external_id,):
     return wrap
 
 
-@sender("python")
-def python_sender(repl, text, file_name=None):
-    code = text.encode('utf-8').encode("hex")
-    execute = 'from binascii import unhexlify as __un; exec(compile(__un(b\'%s\').decode("utf-8"), "<string>", "exec"))\n' % (code,)
-    return default_sender(repl, execute, file_name)
+class ReplViewWrite(sublime_plugin.TextCommand):
+    def run(self, edit, external_id, text):
+        for rv in manager.find_repl(external_id):
+            rv.append_input_text(text)
+            break  # send to first repl found
+        else:
+            sublime.error_message("Cannot find REPL for '{}'".format(external_id))
 
 
-@sender("ruby")
-def ruby_sender(repl, text, file_name=None):
-    import binascii
-    code = binascii.b2a_base64(text)
-    payload = "begin require 'base64'; eval(Base64.decode64('%s')) end\n" % (code,)
-    return default_sender(repl, payload, file_name)
+class ReplWriteSend(sublime_plugin.TextCommand):
+    def run(self, edit, external_id, text):
+        for rv in manager.find_repl(external_id):
+            rv.append_input_text(text)
+            rv.enter()
+            break  # send to first repl found
+        else:
+            sublime.error_message("Cannot find REPL for '{}'".format(external_id))
 
 
-class ReplViewWrite(sublime_plugin.WindowCommand):
-    def run(self, external_id, text, file_name=None):
-        rv = manager.find_repl(external_id)
-        if not rv:
-            return
-        rv.append_input_text(text)
-
-
-class ReplWriteSend(sublime_plugin.WindowCommand):
-    def run(self, external_id, text, file_name=None):
-        rv = manager.find_repl(external_id)
-        if not rv:
-            return
-        rv.append_input_text(text)
-        rv.enter()
-
-
-class ReplSend(sublime_plugin.WindowCommand):
-    def run(self, external_id, text, with_auto_postfix=True, file_name=None):
-        rv = manager.find_repl(external_id)
-        if not rv:
-            return
-        cmd = text
-        if with_auto_postfix:
-            cmd += rv.repl.cmd_postfix
-        SENDERS[external_id](rv.repl, cmd, file_name)
+class ReplSend(sublime_plugin.TextCommand):
+    def run(self, edit, external_id, text, with_auto_postfix=True):
+        for rv in manager.find_repl(external_id):
+            if with_auto_postfix:
+                text += rv.repl.cmd_postfix
+            if sublime.load_settings(SETTINGS_FILE).get('show_transferred_text'):
+                rv.append_input_text(text)
+                rv.adjust_end()
+            SENDERS[external_id](rv.repl, text, self.view)
+            break
+        else:
+            sublime.error_message("Cannot find REPL for '{}'".format(external_id))
 
 
 class ReplTransferCurrent2(sublime_plugin.TextCommand):
-    def run(self, edit, scope="selection", action="write_send"):
+    def run(self, edit, scope="selection", action="send"):
         text = ""
         if scope == "selection":
             text = self.selected_text()
@@ -97,10 +74,10 @@ class ReplTransferCurrent2(sublime_plugin.TextCommand):
         elif scope == "file":
             text = self.selected_file()
         cmd = "repl_" + action
-        self.view.window().run_command(cmd, {"external_id": self.repl_external_id(), "text": text, "file_name": self.view.file_name()})
+        self.view.window().run_command(cmd, {"external_id": self.repl_external_id(), "text": text})
 
     def repl_external_id(self):
-        return self.view.scope_name(0).split(" ")[0].split(".")[1]
+        return self.view.scope_name(0).split(" ")[0].split(".", 1)[1]
 
     def selected_text(self):
         v = self.view

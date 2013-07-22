@@ -1,2 +1,2 @@
-from repl import Repl
-import subprocess_repl
+from .repl import *
+from .subprocess_repl import *

@@ -32,7 +32,7 @@ class Repl(object):
                 return cur
             todo.extend(cur.__subclasses__())
 
-    def __init__(self, encoding, external_id=None, cmd_postfix="\n", suppress_echo=False):
+    def __init__(self, encoding, external_id=None, cmd_postfix="\n", suppress_echo=False, additional_scopes=None):
         self.id = uuid4().hex
         self._encoding = encoding
         self.decoder = getincrementaldecoder(self._encoding)()
@@ -40,12 +40,18 @@ class Repl(object):
         self.external_id = external_id
         self.cmd_postfix = cmd_postfix
         self.suppress_echo = suppress_echo
+        self.additional_scopes = additional_scopes or []
 
     def autocomplete_available(self):
         return False
 
     def autocomplete_completions(self, whole_line, pos_in_line, prefix, whole_prefix, locations):
         raise NotImplementedError
+
+    def allow_restarts(self):
+        """Override if for some reason restart logic should not be
+           used for this REPL"""
+        return True
 
     def close(self):
         if self.is_alive():
@@ -87,8 +93,8 @@ class Repl(object):
                 return None
             try:
                 output = self.decoder.decode(bs)
-            except Exception, e:
-                output = u"■"
+            except Exception as e:
+                output = "■"
                 self.reset_decoder()
             if output:
                 return output

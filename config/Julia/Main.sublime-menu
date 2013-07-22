@@ -3,9 +3,9 @@
         "id": "tools",
         "children":
         [{
-            "caption": "SublimeREPL-Julia",
+            "caption": "SublimeJulia",
             "mnemonic": "r",
-            "id": "SublimeREPLjulia",
+            "id": "SublimeJulia",
             "children":
             [
                 {"command": "repl_open", 
@@ -31,7 +31,7 @@
                     "suppress_echo": {"osx": false,
                                       "linux": false,
                                       "windows": false},
-                    "syntax": "Packages/Sublime-Julia/Syntax/Julia.tmLanguage"
+                    "syntax": "Packages/SublimeJulia/Syntax/Julia.tmLanguage"
                     }
                 }
             ]   

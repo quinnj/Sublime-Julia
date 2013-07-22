@@ -1,9 +1,19 @@
 {
 	// default_extend_env are used to augment any environment variables
-	// that should be visible for all subporcess repls launched within
+	// that should be visible for all subprocess repls launched within
 	// SublimeREPL. This is a very good place to add PATH extension
 	// once "PATH": "{PATH}:/home/username/mylocalinstalls/bin" or whatever
 	"default_extend_env": {},
+
+	// Specify whether to move repls to a different Sublime Text group (frame)
+	// immediately on opening. Setting this to true will simply move it to
+	// the 'next' group from the one that was in focus when it was opened
+	// (one down with row layout, one to the right with column and grid
+	// layout). Alternatively, you can set this to the index of the group in
+	// which you want all repls to be opened (index 0 being the top-left group).
+	// Activating this option will NOT automatically change your layout/create
+	// a new group if it isn't open.
+	"open_repl_in_group": true,
 
 	// Persistent history is stored per REPL external_id, it means that all python
 	// REPLS will share history. If you wish you can disable history altogether
@@ -38,7 +48,8 @@
 		"detect_indentation": false,
 		"auto_complete": true,
 		"line_numbers": false,
-		"gutter": false
+		"gutter": false,
+		"auto_complete_commit_on_tab": true
 	},
 
 	// this settings exposes additional variables in repl config files, especially
@@ -50,5 +61,18 @@
 	// IP address used to setup autocomplete server in sublimerepl.
 	// changing this is usefull when you want to exclude one address
 	// from proxychains/tsocks routing
-	"autocomplete_server_ip": "127.0.0.1"
+	"autocomplete_server_ip": "127.0.0.1",
+
+	// Mapping is used, when external_id of REPL does not match
+	// source.[xxx] scope of syntax definition used to highlight
+	// files from which text is being transfered. For example octave
+	// repls use source.matlab syntax files and w/o this mapping text transfer
+	// will not work
+	"external_id_mapping": {
+		"octave": "matlab"
+	},
+
+	// If set to true, SublimeREPL will try to append evaluated code to repl
+	// output before evaluation (e.g. Ctrl+, f)
+	"show_transferred_text": false
 }

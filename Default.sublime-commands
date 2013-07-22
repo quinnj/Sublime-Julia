@@ -1,0 +1,6 @@
+[
+    {
+        "caption": "SublimeJulia: Restart REPL",
+        "command": "repl_restart"
+    }
+]

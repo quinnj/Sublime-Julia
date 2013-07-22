@@ -2,14 +2,25 @@
 # Copyright (c) 2011, Wojciech Bederski (wuub.net)
 # All rights reserved.
 # See LICENSE.txt for details.
+from __future__ import absolute_import, unicode_literals, print_function, division
 
 import subprocess
 import os
-import repl
+import sys
+from .repl import Repl
 import signal
-import killableprocess
 from sublime import load_settings
-from autocomplete_server import AutocompleteServer
+from .autocomplete_server import AutocompleteServer
+from .killableprocess import Popen
+
+PY3 = sys.version_info[0] == 3
+
+if os.name == 'posix':
+    POSIX = True
+    import fcntl
+    import select
+else:
+    POSIX = False
 
 
 class Unsupported(Exception):
@@ -33,21 +44,20 @@ def win_find_executable(executable, env):
         extensions = [ext]
     else:
         extensions = pathext.split(os.path.pathsep)
-    for dir in dirs:
+    for directory in dirs:
         for extension in extensions:
-            filepath = os.path.join(dir, base + extension)
+            filepath = os.path.join(directory, base + extension)
             if os.path.exists(filepath):
                 return filepath
     return None
 
 
-class SubprocessRepl(repl.Repl):
+class SubprocessRepl(Repl):
     TYPE = "subprocess"
 
-    def __init__(self, encoding, external_id=None, cmd_postfix="\n", suppress_echo=False, cmd=None,
-                 env=None, cwd=None, extend_env=None, soft_quit="", autocomplete_server=False):
-        super(SubprocessRepl, self).__init__(encoding, external_id, cmd_postfix, suppress_echo)
-        settings = load_settings('SublimeREPLjulia.sublime-settings')
+    def __init__(self, encoding, cmd=None, env=None, cwd=None, extend_env=None, soft_quit="", autocomplete_server=False, **kwds):
+        super(SubprocessRepl, self).__init__(encoding, **kwds)
+        settings = load_settings('SublimeJulia.sublime-settings')
 
         if cmd[0] == "[unsupported]":
             raise Unsupported(cmd[1:])
@@ -58,13 +68,19 @@ class SubprocessRepl(repl.Repl):
             self._autocomplete_server.start()
 
         env = self.env(env, extend_env, settings)
-        env["SUBLIMEREPL_AC_PORT"] = str(self.autocomplete_server_port())
-        env["SUBLIMEREPL_AC_IP"] = settings.get("autocomplete_server_ip")
+        env[b"SUBLIMEREPL_AC_PORT"] = str(self.autocomplete_server_port()).encode("utf-8")
+        env[b"SUBLIMEREPL_AC_IP"] = settings.get("autocomplete_server_ip").encode("utf-8")
+
+        if PY3:
+            strings_env = {}
+            for k, v in env.items():
+                strings_env[k.decode("utf-8")] = v.decode("utf-8")
+            env = strings_env
 
         self._cmd = self.cmd(cmd, env)
         self._soft_quit = soft_quit
         self._killed = False
-        self.popen = killableprocess.Popen(
+        self.popen = Popen(
                         self._cmd,
                         startupinfo=self.startupinfo(settings),
                         creationflags=self.creationflags(settings),
@@ -74,6 +90,10 @@ class SubprocessRepl(repl.Repl):
                         stderr=subprocess.STDOUT,
                         stdin=subprocess.PIPE,
                         stdout=subprocess.PIPE)
+
+        if POSIX:
+            flags = fcntl.fcntl(self.popen.stdout, fcntl.F_GETFL)
+            fcntl.fcntl(self.popen.stdout, fcntl.F_SETFL, flags | os.O_NONBLOCK)
 
     def autocomplete_server_port(self):
         if not self._autocomplete_server:
@@ -99,7 +119,7 @@ class SubprocessRepl(repl.Repl):
            executable in env because of this: http://bugs.python.org/issue8557"""
         if os.name != "nt":
             return cmd
-        if isinstance(cmd, basestring):
+        if isinstance(cmd, str):
             _cmd = [cmd]
         else:
             _cmd = cmd
@@ -121,41 +141,43 @@ class SubprocessRepl(repl.Repl):
         if extend_env:
             updated_env.update(self.interpolate_extend_env(updated_env, extend_env))
         bytes_env = {}
-        for k,v in updated_env.items():
+        for k, v in list(updated_env.items()):
             try:
-                enc_k = self.encoder(unicode(k))[0]
-                enc_v = self.encoder(unicode(v))[0]
+                enc_k = self.encoder(str(k))[0]
+                enc_v = self.encoder(str(v))[0]
             except UnicodeDecodeError:
                 continue #f*** it, we'll do it live
-            bytes_env[enc_k] = enc_v
+            else:
+                bytes_env[enc_k] = enc_v
         return bytes_env
 
     def interpolate_extend_env(self, env, extend_env):
         """Interpolates (subst) values in extend_env.
            Mostly for path manipulation"""
         new_env = {}
-        for key, val in extend_env.items():
+        for key, val in list(extend_env.items()):
             new_env[key] = str(val).format(**env)
         return new_env
 
     def startupinfo(self, settings):
         startupinfo = None
         if os.name == 'nt':
-            startupinfo = killableprocess.STARTUPINFO()
-            startupinfo.dwFlags |= killableprocess.STARTF_USESHOWWINDOW
+            from .killableprocess import STARTUPINFO, STARTF_USESHOWWINDOW
+            startupinfo = STARTUPINFO()
+            startupinfo.dwFlags |= STARTF_USESHOWWINDOW
             startupinfo.wShowWindow |= 1 # SW_SHOWNORMAL
         return startupinfo
 
     def creationflags(self, settings):
         creationflags = 0
-        if os.name =="nt":
+        if os.name == "nt":
             creationflags = 0x8000000 # CREATE_NO_WINDOW
         return creationflags
 
     def name(self):
         if self.external_id:
             return self.external_id
-        if isinstance(self._cmd, basestring):
+        if isinstance(self._cmd, str):
             return self._cmd
         return " ".join([str(x) for x in self._cmd])
 
@@ -163,9 +185,25 @@ class SubprocessRepl(repl.Repl):
         return self.popen.poll() is None
 
     def read_bytes(self):
-        # this is windows specific problem, that you cannot tell if there
-        # are more bytes ready, so we read only 1 at a times
-        return self.popen.stdout.read(1)
+        out = self.popen.stdout
+        if POSIX:
+            while True:
+                i, _, _ = select.select([out], [], [])
+                if i:
+                    return out.read(4096)
+        else:
+            # this is windows specific problem, that you cannot tell if there
+            # are more bytes ready, so we read only 1 at a times
+
+            while True:
+                byte = self.popen.stdout.read(1)
+                if byte == b'\r':
+                    # f'in HACK, for \r\n -> \n translation on windows
+                    # I tried universal_endlines but it was pain and misery! :'(
+                    continue
+                return byte
+
+
 
     def write_bytes(self, bytes):
         si = self.popen.stdin
@@ -179,14 +217,14 @@ class SubprocessRepl(repl.Repl):
 
     def available_signals(self):
         signals = {}
-        for k, v in signal.__dict__.items():
+        for k, v in list(signal.__dict__.items()):
             if not k.startswith("SIG"):
                 continue
             signals[k] = v
         return signals
 
     def send_signal(self, sig):
-        if sig==signal.SIGTERM:
+        if sig == signal.SIGTERM:
             self._killed = True
         if self.is_alive():
             self.popen.send_signal(sig)

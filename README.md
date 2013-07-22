@@ -1,54 +1,101 @@
-Sublime-Julia for SublimeText2
+SublimeREPL for SublimeText2
 ============================
+
+If you would like to donate to support SublimeREPL development, you can do so using [GitTip](https://www.gittip.com/wuub/) or [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=4DGEPH7QAVHH6&lc=GB&item_name=SublimeREPL&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted). Someone willing to take care of documentation would also be very welcome :-)
+
+
+Features
+--------
+
+#### Common
+ * Run an interpreter (REPL) inside SublimeText2 view/tab.
+ * Per-language persistent REPL history.
+ * Easily evaluate code in the running REPL
+ * Replace your current build system, and use stdin in your programs.
+ * Rich configuration with platform specific settings, project/file dependent environment variables and sane defaults.
+
+#### Python
+ * Launch python in local or remote(1) virtualenv.
+ * Quickly run selected script or launch PDB.
+ * Use SublimeText2 Python console with history and multiline input.
+
+(1) - (ssh, linux/osx only)
+
+Screenshots
+-----------
+#### Running python code in SublimeREPL
+![Running python code in SublimeREPL](http://i.imgur.com/mmYQ6.png)
+#### R on Windows
+![R on Windows](http://i.imgur.com/jjsDn.png)
+
+Videos
+------
+ * ![Python & virtualenv over SSH](http://img.youtube.com/vi/zodAqBvKQm0/2.jpg)  [Python & virtualenv over SSH](http://youtu.be/zodAqBvKQm0)
+ * ![SBT integration demo](http://img.youtube.com/vi/1Y7Mr_RJpmU/3.jpg) [SBT integration demo](http://youtu.be/1Y7Mr_RJpmU)
+
 
 Installation
 ============
 
 1. Install Package Control. [http://wbond.net/sublime_packages/package_control](http://wbond.net/sublime_packages/package_control)
-2. Navigate to your `Sublime Text 2/Packages` folder on the command line
-  * `~/AppData/Roaming/Sublime Text 2/Packages` on Windows
-  * `~/.config/sublime-text-2/Packages` on Linux
-  * `~/Library/Application Support/Sublime Text 2/Packages` on OSX
-3. Run the command `git clone https://github.com/karbarcca/Sublime-Julia.git Sublime-Julia`
-4. Make any additional path or key binding configurations mentioned below
+2. Install SublimeREPL
+ 1. `Preferences | Package Control | Package Control: Install Package`
+ 2. Choose `SublimeREPL`
+3. Restart SublimeText2
+4. Configure `SublimeREPL` (default settings in `Preferences | Package Settings | SublimeREPL | Settings - Default` should be modified in `Preferences | Package Settings | SublimeREPL | Settings - User`, this way they will survive package upgrades!
 
-Features
---------
+Documentation
+=============
 
-#### Common Sublime Features
- * Adds Julia build system file: Defaults to running `julia` with the current file on the command line; Note that users without julia or julia.bat (windows) in their system PATH need to manually specify julia's path/filename (e.g. "Preferences -> Browse Packages -> Julia -> Build -> Julia.sublime-build", edit "julia" to aboslute path/filename)
- * Adds common Julia snippets for convenience and for those hard-to-remember commands (e.g. `ccall`): ccall, for/while loops, list comprehensions, function/macro/type definitions, if/ifelse blocks
- * Julia language syntax: Note this is different than the other Julia Language sublime package; this package mirrors the official JuliaLang/julia github language syntax, with a few tweaks added for console use within sublime; To explicitly use this syntax, navigate to Julia REPL or .jl file and navigate the menus "View -> Syntax -> Julia"
+Very basic documentation will soon be available on RTD: [http://sublimerepl.readthedocs.org/](http://sublimerepl.readthedocs.org/)
 
-#### SublimeREPL-Julia
- * Includes a forked SublimeREPL package tailored specifically for Julia; built to exist exclusive of SublimeREPL (meaning you may or may not have SublimeREPL installed and this will still work)
- * Creates a "SublimeREPL-Julia" menu under "Tools" to start the Julia REPL, and transfer commands
- * Adds REPL specific key bindings for REPL-like functionality (enter runs text in the buffer, esc clears buffer, etc.)
- * Also adds key bindings for Julia (.jl) files, `ctrl+enter` will send selected text or current line if no text is selected to the repl, `ctrl+shift+enter` runs the entire file
- * Included in package is the "Sublime User Key Bindings.txt" file with a command a user may optionally paste into "Preferences -> Key Bindings - User" to be able to open the REPL with `ctrl+j` (or any other command you may desire); Note using `ctrl+j` will replace the default key binding that joins lines
- * REPL is set to run the `julia-release-basic` version of Julia, so
+#### Getting started
 
-#### SETTING REPL PATH: 
- The REPL is set to run `julia-basic.bat` (windows), `julia-release-basic` (linux,osx)  to open the Julia REPL; the following steps explain how to ensure your setup works correctly
- 1. WINDOWS ONLY: Included in the repo is the file "julia-basic.bat"; copy and paste the file to your Julia directory (where your regular "julia.bat" file resides); this .bat file just changes your Julia installation to use the julia-release-basic.exe REPL instead of julia-release-readline.exe
- 2. Open the SublimeREPL-Julia default settings "Preferences -> Package Settings -> SublimeREPL-Julia -> Settings - Default"
- 3. Copy the file's contents
- 4. Open the SublimeREPL-Julia user settings "Preferences -> Package Settings -> SublimeREPL-Julia -> Settings - User"
- 5. Paste the default settings contents
- 6. The first key is:  "default_extend_env": {},
- 7. WINDOWS ONLY:
-   1. Add your absolute Julia path (where your "julia-basic.bat" file now resides) inside the curly braces with the key "PATH"
-   2. Your edited key should look like: "default_extend_env": {"PATH": "path to your julia-basic.bat; {PATH}"}, (*Note: just include the -path- to your julia-basic.bat file, not the filename itself; Also note the `; {PATH}` after the path, this allows your Julia access to normal environment paths like it would usually)
- 8. LINUX/OSX ONLY:
-   1. Add your absolute Julia path (where your "julia-release-x" files are) inside the curly braces with the key "PATH"
-   2. Your edited key should look like: "default_extend_env": {"PATH": "path to your julia dir/usr/bin; {PATH}"}, (*Note: just include the -path- to your julia-release-x files, not a filename itself; Also note the `; {PATH}` after the path, this allows your Julia access to normal environment paths like it would usually)
+* Create or open your file with code.
+* Menu / Tools / Command Palette (OS X: `⇧⌘P`) 
+then type "SublimeREPL" and select the approperiate language.
+* Menu / View / Layout / Rows: 2 (OS X: `⌥⇧⌘2`).
+* Menu / View / Move File to Group / Group 2 (`⌃⇧2`).
+
+#### Keybindings
+
+* Evaluate in REPL:
+ * <kbd>ctrl+,</kbd>, <kbd>s</kbd> Selection
+ * <kbd>ctrl+,</kbd>, <kbd>f</kbd> File  
+ * <kbd>ctrl+,</kbd>, <kbd>l</kbd> Lines
+ * <kbd>ctrl+,</kbd>, <kbd>b</kbd> Block
+* Transfer in REPL (just copy, without evaluating it):
+ * <kbd>ctrl+shift+,</kbd>, <kbd>s</kbd> Selection
+ * <kbd>ctrl+shift+,</kbd>, <kbd>f</kbd> File  
+ * <kbd>ctrl+shift+,</kbd>, <kbd>l</kbd> Lines
+ * <kbd>ctrl+shift+,</kbd>, <kbd>b</kbd> Block
+
+Note: <kbd>ctrl+,</kbd>, <kbd>f</kbd> means: press Ctrl and Comma, release all, press F.
 
 
 License and Price
 =================
 
-Sublime-Julia is licensed under GPL.
-
 Since version 1.2.0 SublimeREPL is licensed under GPL. Previous versions were licensed under BSD.
 If you're using SublimeREPL in commercial environment a donation is strongly encouraged ;-)
-see https://github.com/wuub/SublimeREPL for additional licensing info on SublimeREPL
+
+Compatibility
+================
+
+SublimeREPL is developed against the latest dev build of SublimeText2, mostly on Windows7 x64 and Linux Mint 13. From time to time it's tested on Mac OSX as well.
+
+I try to make it cross-platform, but from time to time some functions will be platform specific.
+
+
+FAQ
+---
+
+### 1. Is this a terminal emulator?
+
+No. Shell (cmd.exe/bash) REPL can be used for simple tasks (file creation, `git init` etc.) but anything _terminal like_ (mc, vim) will not work! SublimeREPL has a sister project: [SublimePTY](https://github.com/wuub/SublimePTY) that aims to bring real terminal emulator to SublimeText2.
+
+### 2. Is IPython supported?
+
+Yes, with autocompletion and some windowed `%pylab`. Inline `%pylab` is unfortuneatly not possible right now.
+
+
