@@ -54,8 +54,7 @@ class Repl(object):
         return True
 
     def close(self):
-        if self.is_alive():
-            self.kill()
+        self.kill()
 
     def name(self):
         """Returns name of this repl that should be used as a filename"""

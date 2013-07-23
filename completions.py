@@ -8,9 +8,9 @@ import sublime_plugin
 class SublimeJuliaCompletions(sublime_plugin.EventListener):
     def on_query_completions(self, view, prefix, locations):
         try:
-            from .sublimerepl import manager
+            from .sublimejulia import manager
         except ValueError:
-            from sublimerepl import manager
+            from sublimejulia import manager
             
         if not view.settings().get("repl"):
             return True
