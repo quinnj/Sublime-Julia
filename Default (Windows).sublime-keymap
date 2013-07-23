@@ -90,7 +90,6 @@
 		]
 	},
 
-
 	{ "keys": ["ctrl+enter"], "command": "repl_transfer_current2", "args": {"scope": "selection", "action":"write_send"},
 	"context":
 		[
