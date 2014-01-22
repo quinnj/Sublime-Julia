@@ -20,7 +20,7 @@
                         "linux": "utf8",
                         "osx": "utf8"
                         },
-                    "cmd": {"linux": ["julia-release-basic"],
+                    "cmd": {"linux": ["julia-basic"],
                             "osx": ["julia-release-basic"],
                             "windows": ["julia-basic.bat"]},
                     "cwd": "$file_path",
